@@ -1,0 +1,552 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Brixly | Global Headhunters Project</title>
+    <link rel="shortcut icon" type="image/png" href="Theme/img/Favicon/brixly.png" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700&amp;subset=latin-ext">
+    <link rel="stylesheet" href="Content/bootstrap.min.css" />
+    <link rel="stylesheet" href="Content/font-awesome.min.css" />
+    <link rel="stylesheet" href="fonts/essential-regular-fonts/essential-icons.css" />
+    <link rel="stylesheet" href="Plugins/masterslider/style/masterslider.css" />
+    <link rel="stylesheet" href="Plugins/masterslider/skins/default/style.css" />
+    <link rel="stylesheet" href="Plugins/masterslider/fullscreen/style/ms-fullscreen.css" />
+    <link rel="stylesheet" href="Theme/css/theme.min.css" />
+    <script src="Scripts/jquery-3.1.1.min.js"></script>
+    <script src="Scripts/bootstrap.min.js"></script>
+    <script src="Plugins/masterslider/jquery.easing.min.js"></script>
+    <script src="Plugins/masterslider/masterslider.js"></script>
+    <script src="Theme/js/Script.js"></script>
+
+    <script type="text/javascript">
+        // <!-- START | Bootstrap Modal - Close Trigger -->
+        $(function () {
+            $(".custom-close").on('click', function() {
+                $('#contactModal').modal('hide');
+            });
+            $('#contactModal').on('hidden.bs.modal', function () {
+                $("#name").removeClass("with-errors");
+                $("#phone").removeClass("with-errors");
+                $("#errorName").hide();
+                $("#errorPhone").hide();
+                $('#name').val("");
+                $('#phone').val("");
+            })
+        });
+        // <!-- END | Bootstrap Modal - Close Trigger -->
+
+        // <!-- START | Remove Loader -->
+        function removeLoader() {
+            $("#Loading").remove();
+        }
+        // <!-- END | Remove Loader -->
+
+        // <!-- START API CALL | Brixly Contact Form Submission Via LeadSquared -->
+        function transferDataToLeadSquared() {
+
+            var minNameCountFlag = false, minPhoneCountFlag = false;
+
+            if(($("#name").val().length < 3)){
+                $("#errorName").show();
+                $("#name").addClass("with-errors");
+            } else {
+                $("#errorName").hide();
+                $("#name").removeClass("with-errors");
+                minNameCountFlag = true;
+            }
+
+            if(($("#phone").val().length < 10)){
+                $("#errorPhone").show();
+                $("#phone").addClass("with-errors");
+            } else {
+                $("#errorPhone").hide();
+                $("#phone").removeClass("with-errors");
+                minPhoneCountFlag = true;
+            }
+
+            if(minNameCountFlag && minPhoneCountFlag) {
+                var leadSquaredURL = "https://api.leadsquared.com/v2/LeadManagement.svc/Lead.Capture";
+                var leadSquaredAccessKey = "u$rd0a71194d02a2bc5b832a56cc9f99927", leadSquaredSecretKey = "7bbf5bd197f5a318b1fb421966401b38b721c4c0";
+                var givenName = $("#name").val(), givenMobileNumber = $("#phone").val(), referrer = "Brixly";
+
+                var data = [
+                    {
+                        "Attribute": "FirstName",
+                        "Value": givenName
+                    },
+                    {
+                        "Attribute": "Mobile",
+                        "Value": givenMobileNumber
+                    },
+                    {
+                        "Attribute": "mx_Source_MarketPlace",
+                        "Value": referrer
+                    }
+                ];
+
+                $('#contactModal').append('<div id="Loading" class="show"></div>');
+
+                $.ajax({
+                    type: "POST",
+                    url: leadSquaredURL + "?accessKey=" + leadSquaredAccessKey + "&secretKey=" + leadSquaredSecretKey,
+                    contentType: 'application/json',
+                    data: JSON.stringify(data),
+                    success: function(response) {
+                        $("#removeContactForm").remove();
+                        $("#contactForm").prepend( "<h4 align='center' style='margin-top: 25px'>Thanks. You will be contacted shortly.</h4>" );
+                    },
+                    complete: function (data) {
+                        removeLoader(); 
+                    }
+                });
+            }
+        }
+        // <!-- END API CALL | Brixly Contact Form Submission Via LeadSquared -->
+
+        //  <!-- START | Scroll Animation -->
+        $(document).ready(function() {
+            $('a[href^="#"]').on('click',function(e) {
+                e.preventDefault();
+                var target = this.hash, $target = $(target);
+                $('html, body').stop().animate({ 
+                    'scrollTop': $target.offset().top
+                    }, 900, 'swing', function () {
+                    window.location.hash = target;
+                });
+            });
+        });
+        //  <!-- END | Scroll Animation -->
+
+        // <!-- START | Fixed Menu Bar Scroll Limit Changer -->
+        $(window).scroll(function() {    
+            var scroll = $(window).scrollTop();
+            if (scroll >= 10) {
+                $(".transparent_nav").css('background-color', '#fff');
+                $(".header.transparent_nav nav>ul>li>a").css('color', '#282828');
+                $("#logoChanger img:last-child").remove();
+                $("#logoChanger").append("<div class='container'><img src='Theme/img/BrixlyLogo/BW.png' class='header-logo-changer img-responsive' /></div>");
+            } else {
+                $(".transparent_nav").css('background-color', 'transparent');
+                $(".header.transparent_nav nav>ul>li>a").css('color', '#fff');
+                $("#logoChanger img:last-child").remove();
+                $("#logoChanger").append("<div class='container'><img src='Theme/img/BrixlyLogo/WH.png' class='header-logo-changer img-responsive' /></div>");
+            }
+        });
+        // <!-- END | Fixed Menu Bar Scroll Limit Changer -->
+
+        // <!-- START | Triggers - After Document - Ready -->
+        $(document).ready(function() {
+            $(".transparent_nav").css('background-color', 'transparent'); 
+            $('[data-toggle="tooltip"]').tooltip();
+            $("#Loading").remove();
+            var mobile = (/iphone|ipod|android|blackberry|mini|windows\sce|palm/i.test(navigator.userAgent.toLowerCase()));
+            if(mobile) {
+                $(".back2projectsBtn").show();
+                console.log('Hello Mobile !!');
+            } else {
+                $(".back2projectsBtn").hide();
+                console.log('Hello Desktop !!');
+            }
+            $("#errorName").hide();
+            $("#errorPhone").hide();
+        });  
+        // <!-- END | Triggers - After Document - Ready -->
+
+        // <!-- START | Check - Allow Only Alphabets -->
+        function onlyAlphabets(e, t) {
+            try {
+                if(window.event) {
+                    var charCode = window.event.keyCode;
+                } else if(e) {
+                    var charCode = e.which;
+                } else { 
+                    return true; 
+                }
+                if((charCode > 64 && charCode < 91) || (charCode > 96 && charCode) || charCode == 32){
+                    return true;
+                } else {
+
+                    return false;
+                }
+            }
+            catch (err) {
+                console.log(err.Description);
+            }
+        }
+        // <!-- END | Check - Allow Only Alphabets -->
+
+    </script>
+
+    <style type="text/css">
+
+        .top-buffer { margin-top:20px; }
+
+        /* <!-- START | Divider - OR --> */
+        #or {
+            display: inline-block;
+            position: relative;
+            padding: 10px;
+            background-color: #FFF;
+        }
+        .or-hr {
+            margin-bottom: 0;
+            position: relative;
+            top: 22px;
+            height: 0;
+            border: 0;
+            border-top: 1px solid #e4e6e8;
+        }
+        .or-container {
+            text-align: center;
+            clear: both;
+            color: #6a737c;
+            font-variant: small-caps;
+        }
+        /* <!-- END | Divider - OR --> */
+
+        /* <!-- START | Header Menu - Contact Button --> */
+        .btn.palovit30x {
+            border-radius: 5px;
+            padding-top: 7px;
+            padding-bottom: 7px;
+            padding-right: 12px;
+            padding-left: 12px;
+            font-size: 11px;
+            margin-right: -49px;
+            margin-left: -22px;
+            margin-top: 20px;
+        }
+        /* <!-- END | Header Menu - Contact Button --> */
+
+        /* <!-- START | Dynamic Change - Header Logo  --> */
+        .header-logo-changer {
+            float: left;
+            margin: 18px 0 0 -28px;
+            position: relative;
+        }
+        /* <!-- END | Dynamic Change - Header Logo  --> */
+        
+        /* <!-- START | Contact Button - Dynamic Centered --> */
+        .contactBtn {
+            text-align:center;
+            float: none;
+            display: block;
+            width: auto;
+        }
+        .contactBtn > input {
+            text-align: left;
+        }
+        .back2projectsBtn {
+            text-align:center;
+            float: none;
+            display: block;
+            width: auto;
+            margin-bottom: 40px;
+        }
+        /* <!-- END | Contact Button - Dynamic Centered --> */
+
+        /* <!-- START | Brixly Loader --> */
+        #Loading.show {
+            display : block;
+            position : fixed;
+            z-index: 100;
+            background-image : url('Theme/img/BrixlyLoader/gears.gif');
+            background-color: white;
+            opacity : 0.9;
+            background-repeat : no-repeat;
+            background-position : center;
+            left : 0;
+            bottom : 0;
+            right : 0;
+            top : 0;
+        }
+         /* <!-- END | Brixly Loader --> */
+
+        /* <!-- START | Input Text Field - Border Color Changed --> */
+        .with-errors {
+            border: 1px solid #ff0033;
+        }
+        /* <!-- END | Input Text Field - Border Color Changed --> */
+
+        /* <!-- START | Navigation Menu Bar --> */ 
+        .customers, .services, .projects, .reviews {
+            padding-top: 10px;
+        }
+        /* <!-- END | Navigation Menu Bar --> */ 
+
+        /* <!-- START | Bootstrap Model - Center --> */
+        @media (min-width: 768px) {
+            #contactModal .modal-dialog {
+                width: 400px;
+                margin: 100px auto;
+            }
+        }
+
+    </style>
+
+    <!-- START | Brixly Models Triggers - Contact Form -->
+    <script>
+
+        function contactForm() {
+            $('#contactModal').modal({
+                show: true
+            });
+        }
+    </script> 
+    <!-- END | Brixly Models Triggers - Contact Form -->
+
+    <!-- START | Home - Loader -->
+    <div id="Loading"></div>
+    <!-- END | Home - Loader -->
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("#Loading").addClass('show');
+        });
+    </script>
+
+</head>
+<body>
+<div class="body" id="home">
+
+<!-- START | Menu Bar -->
+<header class="header transparent_nav" style="background-color: #171717; box-shadow:rgba(0, 0, 0, 0.2) 0px 0px 15px -2px" id="header">
+    <div class="container">
+
+        <div class="row">
+
+            <div class="col-md-2 col-sm-6 col-xs-6" id="logoChanger">
+                <a href="#" class="logo">
+                    <img src="Theme/img/BrixlyLogo/white.png" class="img-responsive" alt="Brixly" />
+                </a>
+            </div>
+
+            <div class="col-md-8 col-sm-12 col-xs-12 rspnav">
+                <nav class="collnav collapse">
+                    <ul class="nav nav-pills">
+                        <li><a href="index.html#home">HOME</a></li>
+                        <li><a href="index.html#services">SERVICES</a></li>
+                        <li><a href="index.html#projects">PROJECTS</a></li>
+                        <li><a href="index.html#reviews">TESTIMONIALS</a></li>
+                        <li><a href="index.html#customers">CUSTOMERS</a></li>    
+                    </ul>
+                </nav>
+            </div>
+
+            <!-- START | Contact Us Form -->
+            <div class="col-md-1 col-sm-6 col-xs-6">
+                <input type="text" class="btn btn-palovit palovit30x" data-toggle="modal" data-target="#contactModal" value="Contact Us" readonly="readonly" /> 
+            </div>
+            <!-- START | Contact Us Form -->
+
+        </div>
+    </div>
+</header>        
+<!-- END | Menu Bar -->      
+
+<div class="main">
+            
+    <section class="header-page">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <h1>PROJECTS</h1>
+                    <ul class="breadcrumb">
+                        <li><a href="Index.html">Home</a></li>
+                        <li class="active">Global Headhunters Project</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+<!-- START | Brixly Master Slider -->
+<div class="container">
+    <div class="row">
+        <div class="col-md-12 palovit-title top-buffer">
+            <hr class="hr">
+            <h2>GLOBAL HEADHUNTERS</h2>
+        </div>
+        <div class="col-md-12">
+            <article class="project-single p-t-40 p-b-40">
+                <div class="row m-b-30">
+                    <div class="col-md-8">
+                        <div class="master-slider ms-skin-default" id="mastergallery">
+                            <div class="ms-slide">
+                                <img src="Plugins/masterslider/style/blank.gif" data-src="Theme/img/BrixlyProjects/GHH/1.jpg" />
+                                <img class="ms-thumb" src="Theme/img/BrixlyProjects/GHH/1.jpg" />
+                            </div>
+                            <div class="ms-slide">
+                                <img src="Plugins/masterslider/style/blank.gif" data-src="Theme/img/BrixlyProjects/GHH/2.jpg" />
+                                <img class="ms-thumb" src="Theme/img/BrixlyProjects/GHH/2.jpg" />
+                            </div>
+                            <div class="ms-slide">
+                                <img src="Plugins/masterslider/style/blank.gif" data-src="Theme/img/BrixlyProjects/GHH/3.jpg" />
+                                <img class="ms-thumb" src="Theme/img/BrixlyProjects/GHH/3.jpg" />
+                            </div>
+                            <div class="ms-slide">
+                                <img src="Plugins/masterslider/style/blank.gif" data-src="Theme/img/BrixlyProjects/GHH/4.jpg" />
+                                <img class="ms-thumb" src="Theme/img/BrixlyProjects/GHH/4.jpg" />
+                            </div>
+                            <div class="ms-slide">
+                                <img src="Plugins/masterslider/style/blank.gif" data-src="Theme/img/BrixlyProjects/GHH/5.jpg" />
+                                <img class="ms-thumb" src="Theme/img/BrixlyProjects/GHH/5.jpg" />
+                            </div>
+                            <div class="ms-slide">
+                                <img src="Plugins/masterslider/style/blank.gif" data-src="Theme/img/BrixlyProjects/GHH/6.jpg" />
+                                <img class="ms-thumb" src="Theme/img/BrixlyProjects/GHH/6.jpg" />
+                            </div>
+                            <div class="ms-slide">
+                                <img src="Plugins/masterslider/style/blank.gif" data-src="Theme/img/BrixlyProjects/GHH/7.jpg" />
+                                <img class="ms-thumb" src="Theme/img/BrixlyProjects/GHH/7.jpg" />
+                            </div>
+                            <div class="ms-slide">
+                                <img src="Plugins/masterslider/style/blank.gif" data-src="Theme/img/BrixlyProjects/GHH/8.jpg" />
+                                <img class="ms-thumb" src="Theme/img/BrixlyProjects/GHH/8.jpg" />
+                            </div>
+                            <div class="ms-slide">
+                                <img src="Plugins/masterslider/style/blank.gif" data-src="Theme/img/BrixlyProjects/GHH/9.jpg" />
+                                <img class="ms-thumb" src="Theme/img/BrixlyProjects/GHH/9.jpg" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <h3>Project Information</h3>
+                        <table class="table m-b-60">
+                            <tr>
+                                <td><i class="fa fa-calendar-o"></i> <span>Construction Date : </span> April 2016</td>
+                            </tr>
+                            <tr>
+                                <td><i class="fa fa-map-marker"></i> <span>Location : </span> Sarjapur Road, Bangalore</td>
+                            </tr>
+                            <tr>
+                                <td><i class="fa fa-building-o"></i> <span>Category : </span> Next Generation Office</td>
+                            </tr>
+                            <tr>
+                                <td><i class="fa fa-suitcase"></i> <span>Firm : </span> Global HeadHunters</td>
+                            </tr>
+                        </table>
+                        <h3>Project Details</h3>
+                        <small>To sure calm much most long me mean. Able rent long in do we. Uncommonly no it announcing melancholy an in. Mirth learn it he given. Secure shy favour length all twenty denote. He felicity no an at packages answered opinions juvenile.</small>
+                    </div>
+                </div>
+            </article>
+            <div class="row back2projectsBtn container">
+                <a href="index.html#projects" class="btn btn-palovit palovit35" /> < Back To Projects</a>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END | Brixly Master Slider -->
+
+<!-- START | Bootstrap Medium Sized | Contact Form -->
+<div class="container">
+
+    <div class="modal fade" id="contactModal" role="dialog" tabindex="-1">
+    <div class="modal-dialog modal-md">
+    
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="close custom-close" data-dismiss="modal" id="good">&times;</button>
+                <hr class="hr" />
+                <h4 align="center">Contact Form</h4>
+            </div>
+
+            <div class="modal-body" id="contactForm">  
+                <div id="removeContactForm">
+                    <form onsubmit="transferDataToLeadSquared();return false;" id="contactFormBx">
+                        <div class="control-group">
+
+                            <div class="form-group">
+                                <label>Name</label>
+                                <input class="form-control" type="text" for="name" id="name" maxlength="20" onkeypress="return onlyAlphabets(event, this);" data-toggle="tooltip" title="Only Alphabets are Allowed" />
+                            </div>
+
+                            <div class="help-block" id="errorName">Minimum of 3 characters</div>
+
+                            <div class="form-group">
+                                <label class="control-label">Phone Number</label>
+                                <input class="form-control" type="text" for="phone" id="phone" maxlength="12" onkeypress="return event.charCode >= 48 && event.charCode <= 57" data-toggle="tooltip" title="Only Numbers are Allowed" />
+                            </div>
+
+                            <div class="help-block" id="errorPhone">Minimum of 10 characters</div>
+
+                            <div class="row contactBtn container">
+                                <input name="Submit" type="submit" id="submitBtn" value="Request Call Back" class="btn btn-palovit palovit35" />
+                            </div>
+
+                        </div>
+                    </form>   
+                </div>
+                <div class="or-container">
+                    <hr class="or-hr">
+                    <div id="or">or</div>
+                </div>
+                <h5 align="center">Contact Number: +91-9538377033</h5>
+            </div>
+        </div>    
+    </div>
+  </div>
+</div>
+<!-- END | Bootstrap Medium Sized | Contact Form -->
+
+<!-- START | Brixly Footer -->
+<footer class="footer" id="footer" >
+    <div class="ftop">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h4>About Brixly</h4>
+                    <small>Be it your commercial fit out or construction work, we handle all kinds of work. As a general contractor on a project we bring more efficiency, transparency, tracking and control auditing through technology.</small> 
+                    <div>
+                        <ul class="social" style="list-style: none; margin-top:15px;">
+                            <li class="facebook"><a href="http://facebook.com/brixly.in/" target="_blank"><i class="fa fa-facebook"></i></a></li>
+                            <li class="twitter"><a href="http://twitter.com/Brixlyinterior" target="_blank"><i class="fa fa-twitter"></i></a></li>
+                            <li class="google"><a href="http://google.co.in/maps/uv?hl=en&pb=!1s0x3bae16a64e0b4379:0xd69e6dfdab083eef!2m19!2m2!1i80!2i80!3m1!2i20!16m13!1b1!2m2!1m1!1e1!2m2!1m1!1e3!2m2!1m1!1e5!2m2!1m1!1e4!3m1!7e115!4shttps://picasaweb.google.com/lh/sredir?uname%3D107176940977185052441%26id%3D6376542182902309106%26target%3DPHOTO!5sbrixly+-+Google+Search&imagekey=!1e3!2s-ZDJqbj8TWxs/WH4HVLsvoPI/AAAAAAAAAC4/VuFB60W26IEo097ecUwJ_pvNuvbHBgqXQCLIB&sa=X&ved=0ahUKEwikmKLG49zSAhXBNI8KHeECCAcQoioIZzAO" target="_blank"><i class="fa fa-google" target="_blank"></i></a></li>
+                            <!-- 
+                            <li class="instagram"><a href="#"><i class="fa fa-instagram" target="_blank"></i></a></li>
+                            <li class="youtube"><a href="#"><i class="fa fa-youtube" target="_blank"></i></a></li> 
+                            -->
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <h4>Get In Touch</h4>
+                    <ul class="adress">
+                        <li><i class="fa fa-map-marker"></i> 837/1, 2nd Cross, 7th Main, HAL 2nd Stage, Indiranagar, Bengaluru, Karnataka 560038 </li>
+                        <li><i class="fa fa-phone"></i> +91-9538377033</li>
+                        <li><i class="fa fa-envelope"></i> delight@brixly.in</li>
+                        <li><i class="fa fa-support"></i> support@brixly.in</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="fbottom">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-2">
+                    <a href="index.html" class="logo">
+                        <img src="Theme/img/BrixlyLogo/white.png" class="img-responsive" width="125" class="img-responsive" alt="Brixly" />
+                    </a>
+                </div>
+                <div class="col-md-4 copyright">
+                   Copyright &copy; Uno HQ Technologies Pvt Ltd. All Rights Reserved.
+                </div>
+                <div class="col-md-6 clearfix fmenu">
+                    <ul>
+                        <li><a>About Us</a></li>
+                        <li><a onclick="contactForm()">Contact Us</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>    
+<!-- END | Brixly Footer -->
+
+</body>
+</html>
