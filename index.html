@@ -126,6 +126,9 @@
             $('a[href^="#"]').on('click',function(e) {
                 e.preventDefault();
                 var target = this.hash, $target = $(target);
+                if(target === "#quote-carousel") {
+                	return;
+                }
                 $('html, body').stop().animate({ 
                     'scrollTop': $target.offset().top
                     }, 900, 'swing', function () {
@@ -294,8 +297,8 @@
         /* <!-- START | Testimonials --> */ 
         /* carousel */
         #quote-carousel {
-          padding: 0 10px 30px 10px;
-          margin-top: 30px;
+        	padding: 0 30px 50px 30px;
+    		margin-top: 20px;
         }
 
         /* Control buttons  */
@@ -304,17 +307,17 @@
           color: #222;
           font-size: 2.3em;
           text-shadow: none;
-          margin-top: 30px;
+          margin-top: 45px;
         }
 
         /* Previous button  */
         #quote-carousel .carousel-control.left {
-          left: -28px;
+          left: -15px;
         }
 
         /* Next button  */
         #quote-carousel .carousel-control.right {
-          right: -45px !important;
+          right: -15px !important;
         }
 
         /* Changes the position of the indicators */
@@ -360,14 +363,6 @@
         /**
           MEDIA QUERIES
         */
-
-        /* Small devices (tablets, 768px and up) */
-        @media (min-width: 768px) { 
-            #quote-carousel {
-              margin-bottom: 0;
-              padding: 0 40px 30px 40px;
-            }
-        }
 
         /* Small devices (tablets, up to 768px) */
         @media (max-width: 768px) { 
@@ -874,7 +869,7 @@
                             <div class="col-sm-3 text-center">
                                 <img class="img-circle" src="http://www.reactiongifs.com/r/overbite.gif" style="width: 100px;height:100px;">
                             </div>
-                            <div class="col-sm-9">
+                            <div class="col-sm-8">
                                 <p> Not only has Brixly caused a breakthrough in les conversions, but every time I’ve contacted support I’ve had fast and well-informed replies and that really says a lot.</p>
                                 <small>Someone famous</small>
                             </div>
@@ -889,7 +884,7 @@
                             <div class="col-sm-3 text-center">
                                 <img class="img-circle" src="https://s3.amazonaws.com/uifaces/faces/twitter/mijustin/128.jpg" style="width: 100px;height:100px;">
                             </div>
-                            <div class="col-sm-9">
+                            <div class="col-sm-8">
                                 <p> The Brixly Chrome Extension makes it incredibly easy to set up and run A/B tests. This means we test more and iterate faster.Optimizing our site is now a simple, streamlined process.</p>
                                 <small>Someone famous</small>
                             </div>
@@ -904,7 +899,7 @@
                             <div class="col-sm-3 text-center">
                                 <img class="img-circle" src="https://s3.amazonaws.com/uifaces/faces/twitter/keizgoesboom/128.jpg" style="width: 100px;height:100px;">
                             </div>
-                            <div class="col-sm-9">
+                            <div class="col-sm-8">
                                 <p> We managed to increase our sign ups by 37% by using Brixly's tool. It was easy to run and analyze, as their multiple tools allowed for a streamlined process</p>
                                 <small>Someone famous</small>
                             </div>
@@ -913,12 +908,9 @@
                 </div>
             </div>
 
-        <!-- FIX NEEDED FOR NEXT/PREV BUTTON - Carousel Buttons Next/Prev 
 
         <a data-slide="prev" href="#quote-carousel" class="left carousel-control"><i class="fa fa-chevron-left"></i></a>
         <a data-slide="next" href="#quote-carousel" class="right carousel-control"><i class="fa fa-chevron-right"></i></a>
-        
-            Carousel Buttons Next/Prev -->
 
       </div>                          
     </div>
